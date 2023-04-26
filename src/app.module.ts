@@ -1,11 +1,20 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { ProductsModule } from './products/products.module';
+import { getEnvPath } from './common/helpers/env.helper';
+import { DatabaseModule } from './database/database.module';
 
+const envFilePath: string = getEnvPath(`${__dirname}`);
 @Module({
-  imports: [UsersModule, ProductsModule],
+  imports: [
+    UsersModule,
+    ProductsModule,
+    ConfigModule.forRoot({ envFilePath, isGlobal: true }),
+    DatabaseModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
