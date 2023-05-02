@@ -1,11 +1,14 @@
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Inject, Injectable } from '@nestjs/common';
+import { ConfigType } from '@nestjs/config';
+import config from './config';
 
 @Injectable()
 export class AppService {
-  constructor(private config: ConfigService) {}
+  constructor(
+    @Inject(config.KEY) private configService: ConfigType<typeof config>,
+  ) {}
 
   getHello(): string {
-    return `Hello World! from ${this.config.get('ENV')}`;
+    return `Hello World! from ${this.configService.apiKey}`;
   }
 }
