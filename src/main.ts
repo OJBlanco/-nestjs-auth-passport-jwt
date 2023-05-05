@@ -23,7 +23,8 @@ async function bootstrap() {
 
   // URL API
   SwaggerModule.setup('docs', app, document);
-
+  // TODO: Investigar como configurar mejor los CORS para delimitar el acceso a solo el frontend o app movil
+  app.enableCors();
   await app.listen(3000);
 }
 bootstrap();
