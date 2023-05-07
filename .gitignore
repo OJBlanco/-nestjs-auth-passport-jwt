@@ -40,3 +40,6 @@ envs/.env.development
 envs/.env.staging
 envs/.env.production
 envs/.env.local
+envs/.env.*
+
+/postgres_data
