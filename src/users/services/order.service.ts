@@ -9,13 +9,13 @@ export class OrderService {
     private userService: UsersService,
     private productService: ProductsService,
   ) {}
-  getOrderByUser(id: number): Order {
+  async getOrderByUser(id: number) {
     const user = this.userService.findOne(id);
     return {
       id,
       date: new Date(),
       user,
-      products: this.productService.findAll(),
+      products: await this.productService.findAll(),
     };
   }
 }
