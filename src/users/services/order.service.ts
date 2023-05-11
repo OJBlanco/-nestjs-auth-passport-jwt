@@ -12,6 +12,7 @@ export class OrderService {
   getOrderByUser(id: number): Order {
     const user = this.userService.findOne(id);
     return {
+      id,
       date: new Date(),
       user,
       products: this.productService.findAll(),
