@@ -1,22 +1,25 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { Brand } from '../entities/brand.entity';
 import { CreateBrandDto, UpdateBrandDto } from '../dtos/brand.dtos';
+import { ValidateIfExist } from 'src/common/services/validate-if-exist';
 
 @Injectable()
-export class BrandsService {
+export class BrandsService extends ValidateIfExist<Brand> {
   constructor(
     @InjectRepository(Brand) private brandRepository: Repository<Brand>,
-  ) {}
+  ) {
+    super('Brand', brandRepository);
+  }
 
   findAll() {
     return this.brandRepository.find({});
   }
 
   async findOne(id: number) {
-    const brand = await this.existBrand(id);
+    const brand = await this.existEntry(id);
     return brand;
   }
 
@@ -26,7 +29,7 @@ export class BrandsService {
   }
 
   async update(id: number, changes: UpdateBrandDto) {
-    const brand = await this.existBrand(id);
+    const brand = await this.existEntry(id);
 
     this.brandRepository.merge(brand, changes);
 
@@ -34,17 +37,8 @@ export class BrandsService {
   }
 
   async remove(id: number) {
-    await this.existBrand(id);
+    await this.existEntry(id);
 
     return this.brandRepository.delete(id);
-  }
-
-  protected async existBrand(id): Promise<Brand> {
-    const brand = await this.brandRepository.findOneBy({ id });
-    if (!brand) {
-      throw new NotFoundException(`Brand #${id} not found`);
-    }
-
-    return brand;
   }
 }

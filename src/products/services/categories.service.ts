@@ -1,23 +1,26 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-
-import { Category } from '../entities/category.entity';
-import { CreateCategoryDto, UpdateCategoryDto } from '../dtos/category.dtos';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+import { Category } from '../entities/category.entity';
+import { CreateCategoryDto, UpdateCategoryDto } from '../dtos/category.dtos';
+import { ValidateIfExist } from '../../common/services/validate-if-exist';
+
 @Injectable()
-export class CategoriesService {
+export class CategoriesService extends ValidateIfExist<Category> {
   constructor(
     @InjectRepository(Category)
     private categoryRepository: Repository<Category>,
-  ) {}
+  ) {
+    super('Category', categoryRepository);
+  }
 
   async findAll() {
     return this.categoryRepository.find({});
   }
 
   async findOne(id: number) {
-    const category = this.existCategory(id);
+    const category = this.existEntry(id);
     return category;
   }
 
@@ -27,7 +30,7 @@ export class CategoriesService {
   }
 
   async update(id: number, changes: UpdateCategoryDto) {
-    const category = await this.existCategory(id);
+    const category = await this.existEntry(id);
 
     this.categoryRepository.merge(category, changes);
 
@@ -35,18 +38,8 @@ export class CategoriesService {
   }
 
   async remove(id: number) {
-    this.existCategory(id);
+    this.existEntry(id);
 
     return this.categoryRepository.delete(id);
-  }
-
-  protected async existCategory(id: number): Promise<Category> {
-    const category = await this.categoryRepository.findOneBy({ id });
-
-    if (!category) {
-      throw new NotFoundException(`Category #${id} not found`);
-    }
-
-    return category;
   }
 }

@@ -1,25 +1,25 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { Product } from './../entities/product.entity';
 import { CreateProductDto, UpdateProductDto } from './../dtos/products.dtos';
+import { ValidateIfExist } from '../../common/services/validate-if-exist';
 
 @Injectable()
-export class ProductsService {
+export class ProductsService extends ValidateIfExist<Product> {
   constructor(
     @InjectRepository(Product) private productRepository: Repository<Product>,
-  ) {}
+  ) {
+    super('Product', productRepository);
+  }
 
   findAll() {
     return this.productRepository.find({});
   }
 
   async findOne(id: number) {
-    const product = await this.productRepository.findOneBy({ id });
-    if (!product) {
-      throw new NotFoundException(`Product #${id} not found`);
-    }
+    const product = await this.existEntry(id);
     return product;
   }
 
@@ -35,11 +35,7 @@ export class ProductsService {
   }
 
   async remove(id: number) {
-    const product = await this.productRepository.findOneBy({ id });
-
-    if (!product) {
-      throw new NotFoundException(`Product #${id} not found`);
-    }
+    await this.existEntry(id);
 
     return this.productRepository.delete(id);
   }
