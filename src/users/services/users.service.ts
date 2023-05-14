@@ -1,58 +1,46 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 import { User } from '../entities/user.entity';
 import { CreateUserDto, UpdateUserDto } from '../dtos/user.dto';
+import { ValidateIfExist } from '../../common/services/validate-if-exist';
 
 @Injectable()
-export class UsersService {
-  private counterId = 1;
-  private users: User[] = [
-    {
-      id: 1,
-      email: 'correo@mail.com',
-      password: '12345',
-      role: 'admin',
-    },
-  ];
-
-  findAll() {
-    return this.users;
+export class UsersService extends ValidateIfExist<User> {
+  constructor(
+    @InjectRepository(User) private userRepository: Repository<User>,
+  ) {
+    super('User', userRepository);
   }
 
-  findOne(id: number) {
-    const user = this.users.find((item) => item.id === id);
-    if (!user) {
-      throw new NotFoundException(`User #${id} not found`);
-    }
+  findAll() {
+    return this.userRepository.find({});
+  }
+
+  async findOne(id: number) {
+    const user = await this.existEntry(id);
+
     return user;
   }
 
   create(data: CreateUserDto) {
-    this.counterId = this.counterId + 1;
-    const newUser = {
-      id: this.counterId,
-      ...data,
-    };
-    this.users.push(newUser);
-    return newUser;
+    const newUser = this.userRepository.create(data);
+
+    return this.userRepository.save(newUser);
   }
 
-  update(id: number, changes: UpdateUserDto) {
-    const user = this.findOne(id);
-    const index = this.users.findIndex((item) => item.id === id);
-    this.users[index] = {
-      ...user,
-      ...changes,
-    };
-    return this.users[index];
+  async update(id: number, changes: UpdateUserDto) {
+    const user = await this.existEntry(id);
+
+    this.userRepository.merge(user, changes);
+
+    this.userRepository.save(user);
   }
 
-  remove(id: number) {
-    const index = this.users.findIndex((item) => item.id === id);
-    if (index === -1) {
-      throw new NotFoundException(`User #${id} not found`);
-    }
-    this.users.splice(index, 1);
-    return true;
+  async remove(id: number) {
+    await this.existEntry(id);
+
+    this.userRepository.delete(id);
   }
 }

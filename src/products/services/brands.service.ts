@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 
 import { Brand } from '../entities/brand.entity';
 import { CreateBrandDto, UpdateBrandDto } from '../dtos/brand.dtos';
-import { ValidateIfExist } from 'src/common/services/validate-if-exist';
+import { ValidateIfExist } from '../../common/services/validate-if-exist';
 
 @Injectable()
 export class BrandsService extends ValidateIfExist<Brand> {
