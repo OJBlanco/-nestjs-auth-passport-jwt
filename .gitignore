@@ -43,3 +43,4 @@ envs/.env.local
 envs/.env.*
 
 /postgres_data
+/mysql_data

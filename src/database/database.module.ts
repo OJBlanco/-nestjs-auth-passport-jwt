@@ -11,8 +11,9 @@ import config from '../config';
       inject: [config.KEY],
       useFactory: (configService: ConfigType<typeof config>) => {
         const { user, host, dbName, password, port } = configService.postgres;
+        // const { user, host, dbName, password, port } = configService.mysql;
         return {
-          type: 'postgres',
+          type: 'postgres', // 'mysql'
           host,
           port,
           username: user,
