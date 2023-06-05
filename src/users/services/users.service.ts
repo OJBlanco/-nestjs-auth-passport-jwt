@@ -15,7 +15,19 @@ export class UsersService extends ValidateIfExist<User> {
   }
 
   findAll() {
-    return this.userRepository.find({});
+    return this.userRepository.find({
+      relations: ['customer'],
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        customer: {
+          name: true,
+          lastName: true,
+          phone: true,
+        },
+      },
+    });
   }
 
   async findOne(id: number) {

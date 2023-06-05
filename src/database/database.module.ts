@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigType } from '@nestjs/config';
 
 import config from '../config';
+import dataSource from './dataSource';
 
 @Global()
 @Module({
@@ -20,11 +21,11 @@ import config from '../config';
           password,
           database: dbName,
           synchronize: false,
+          entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         };
       },
     }),
   ],
-  providers: [],
   exports: [TypeOrmModule],
 })
 export class DatabaseModule {}
