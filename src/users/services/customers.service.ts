@@ -5,12 +5,14 @@ import { Repository } from 'typeorm';
 import { Customer } from '../entities/customer.entity';
 import { CreateCustomerDto, UpdateCustomerDto } from '../dtos/customer.dto';
 import { ValidateIfExist } from '../../common/services/validate-if-exist';
+import { UsersService } from './users.service';
 
 @Injectable()
 export class CustomersService extends ValidateIfExist<Customer> {
   constructor(
     @InjectRepository(Customer)
     private customerRepository: Repository<Customer>,
+    private userService: UsersService,
   ) {
     super('Customer', customerRepository);
   }
@@ -26,6 +28,10 @@ export class CustomersService extends ValidateIfExist<Customer> {
 
   async create(data: CreateCustomerDto) {
     const newCustomer = this.customerRepository.create(data);
+    if (data.userId) {
+      const user = await this.userService.findOne(data.userId);
+      newCustomer.user = user;
+    }
 
     return this.customerRepository.save(newCustomer);
   }
