@@ -19,7 +19,21 @@ export class BrandsService extends ValidateIfExist<Brand> {
   }
 
   async findOne(id: number) {
-    const brand = await this.existEntry(id);
+    const brand = await this.brandRepository.findOne({
+      where: { id },
+      relations: ['products'],
+      select: {
+        id: true,
+        name: true,
+        image: true,
+        createAt: true,
+        products: {
+          id: true,
+          name: true,
+          image: true,
+        },
+      },
+    });
     return brand;
   }
 
