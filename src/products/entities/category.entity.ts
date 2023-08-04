@@ -30,6 +30,6 @@ export class Category {
   updateAt: Date;
 
   @ManyToMany(() => Product, (product) => product.categories)
-  @JoinTable()
+  @JoinTable({ name: 'product_categories_category' })
   products: Product[];
 }
