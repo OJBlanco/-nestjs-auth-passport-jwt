@@ -20,7 +20,7 @@ export class AddForeignkeyToProduct1685927931853 implements MigrationInterface {
       new TableForeignKey({
         columnNames: ['brandId'],
         referencedColumnNames: ['id'],
-        referencedTableName: 'user',
+        referencedTableName: 'brand',
         onDelete: 'CASCADE',
       }),
     );
