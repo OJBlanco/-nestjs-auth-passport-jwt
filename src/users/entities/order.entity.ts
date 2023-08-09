@@ -1,4 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Product } from '../../products/entities/product.entity';
 import { User } from './user.entity';
 
@@ -7,8 +13,17 @@ export class Order {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'date' })
-  date: Date;
+  @CreateDateColumn({
+    type: 'timestamptz',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  createAt: Date;
+
+  @UpdateDateColumn({
+    type: 'timestamptz',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  updateAt: Date;
 
   user: User;
   products: Product[];
