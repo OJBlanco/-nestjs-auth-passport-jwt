@@ -121,6 +121,12 @@ export class ProductsService extends ValidateIfExist<Product> {
         id: productId,
       },
       relations: ['categories'],
+      select: {
+        id: true,
+        categories: {
+          id: true,
+        },
+      },
     });
     const category = await this.categoryRepository.findOne({
       where: { id: categoryId },
@@ -135,6 +141,12 @@ export class ProductsService extends ValidateIfExist<Product> {
         id: productId,
       },
       relations: ['categories'],
+      select: {
+        id: true,
+        categories: {
+          id: true,
+        },
+      },
     });
     product.categories = product.categories.filter((item) => {
       return item.id !== categoryId;
