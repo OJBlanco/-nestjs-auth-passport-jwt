@@ -2,11 +2,13 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Product } from '../../products/entities/product.entity';
-import { User } from './user.entity';
+import { Customer } from './customer.entity';
+import { OrderItem } from './order-item.entity';
 
 @Entity()
 export class Order {
@@ -25,6 +27,9 @@ export class Order {
   })
   updateAt: Date;
 
-  user: User;
-  products: Product[];
+  @ManyToOne(() => Customer, (customer) => customer.orders)
+  customer: Customer;
+
+  @OneToMany(() => OrderItem, (item) => item.order)
+  items: OrderItem[];
 }
