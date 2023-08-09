@@ -115,6 +115,32 @@ export class ProductsService extends ValidateIfExist<Product> {
     return this.productRepository.save(product);
   }
 
+  async addCategoryToProduct(productId: number, categoryId: number) {
+    const product = await this.productRepository.findOne({
+      where: {
+        id: productId,
+      },
+      relations: ['categories'],
+    });
+    const category = await this.categoryRepository.findOne({
+      where: { id: categoryId },
+    });
+    product.categories.push(category);
+    return this.productRepository.save(product);
+  }
+
+  async removeCategoryByProduct(productId: number, categoryId: number) {
+    const product = await this.productRepository.findOne({
+      where: {
+        id: productId,
+      },
+      relations: ['categories'],
+    });
+    product.categories = product.categories.filter((item) => {
+      return item.id !== categoryId;
+    });
+  }
+
   async remove(id: number) {
     await this.existEntry(id);
 
