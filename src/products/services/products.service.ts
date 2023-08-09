@@ -151,6 +151,8 @@ export class ProductsService extends ValidateIfExist<Product> {
     product.categories = product.categories.filter((item) => {
       return item.id !== categoryId;
     });
+
+    return this.productRepository.save(product);
   }
 
   async remove(id: number) {
