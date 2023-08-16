@@ -3,7 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 
 import { Product } from './../entities/product.entity';
-import { CreateProductDto, UpdateProductDto } from './../dtos/products.dtos';
+import {
+  CreateProductDto,
+  FilterProductDto,
+  UpdateProductDto,
+} from './../dtos/products.dtos';
 import { ValidateIfExist } from '../../common/services/validate-if-exist';
 import { Category } from '../entities/category.entity';
 import { Brand } from '../entities/brand.entity';
@@ -19,7 +23,16 @@ export class ProductsService extends ValidateIfExist<Product> {
     super('Product', productRepository);
   }
 
-  findAll() {
+  findAll(params?: FilterProductDto) {
+    const pagination = {
+      take: undefined,
+      skip: undefined,
+    };
+    if (params) {
+      const { limit, offset } = params;
+      pagination.take = limit;
+      pagination.skip = offset;
+    }
     return this.productRepository.find({
       relations: ['brand'],
       select: {
@@ -36,6 +49,7 @@ export class ProductsService extends ValidateIfExist<Product> {
           image: true,
         },
       },
+      ...pagination,
     });
   }
 
