@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import {
   Between,
   FindManyOptions,
-  FindOneOptions,
   FindOptionsWhere,
   In,
   Repository,
