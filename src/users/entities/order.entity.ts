@@ -7,6 +7,9 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+
+import { Exclude } from 'class-transformer';
+
 import { Customer } from './customer.entity';
 import { OrderItem } from './order-item.entity';
 
@@ -21,6 +24,7 @@ export class Order {
   })
   createAt: Date;
 
+  @Exclude()
   @UpdateDateColumn({
     type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',

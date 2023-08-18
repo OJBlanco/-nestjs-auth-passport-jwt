@@ -8,6 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Product } from './product.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class Category {
@@ -17,12 +18,14 @@ export class Category {
   @Column({ type: 'varchar', length: 200 })
   name: string;
 
+  @Exclude()
   @CreateDateColumn({
     type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
   })
   createAt: Date;
 
+  @Exclude()
   @UpdateDateColumn({
     type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',

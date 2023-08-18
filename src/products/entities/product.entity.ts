@@ -11,6 +11,7 @@ import {
 } from 'typeorm';
 import { Brand } from './brand.entity';
 import { Category } from './category.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class Product {
@@ -33,12 +34,14 @@ export class Product {
   @Column({ type: 'varchar', length: 255 })
   image: string;
 
+  @Exclude()
   @CreateDateColumn({
     type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
   })
   createAt: Date;
 
+  @Exclude()
   @UpdateDateColumn({
     type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
