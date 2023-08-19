@@ -16,7 +16,7 @@ export class Brand {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar', length: 60, unique: true })
+  @Column({ type: 'varchar', length: 120, unique: true })
   name: string;
 
   @Column({ type: 'varchar', length: 255 })

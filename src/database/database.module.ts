@@ -3,7 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigType } from '@nestjs/config';
 
 import config from '../config';
-import dataSource from './dataSource';
 
 @Global()
 @Module({
