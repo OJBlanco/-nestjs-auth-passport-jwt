@@ -1,58 +1,50 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 import { Customer } from '../entities/customer.entity';
 import { CreateCustomerDto, UpdateCustomerDto } from '../dtos/customer.dto';
+import { ValidateIfExist } from '../../common/services/validate-if-exist';
+import { UsersService } from './users.service';
 
 @Injectable()
-export class CustomersService {
-  private counterId = 1;
-  private customers: Customer[] = [
-    {
-      id: 1,
-      name: 'Nicolas',
-      lastName: 'Molina',
-      phone: '3111111212',
-    },
-  ];
-
+export class CustomersService extends ValidateIfExist<Customer> {
+  constructor(
+    @InjectRepository(Customer)
+    private customerRepository: Repository<Customer>,
+    private userService: UsersService,
+  ) {
+    super('Customer', customerRepository);
+  }
   findAll() {
-    return this.customers;
+    return this.customerRepository.find({});
   }
 
-  findOne(id: number) {
-    const customer = this.customers.find((item) => item.id === id);
-    if (!customer) {
-      throw new NotFoundException(`Customer #${id} not found`);
-    }
+  async findOne(id: number) {
+    const customer = await this.existEntry(id);
+
     return customer;
   }
 
-  create(data: CreateCustomerDto) {
-    this.counterId = this.counterId + 1;
-    const newCustomer = {
-      id: this.counterId,
-      ...data,
-    };
-    this.customers.push(newCustomer);
-    return newCustomer;
-  }
-
-  update(id: number, changes: UpdateCustomerDto) {
-    const customer = this.findOne(id);
-    const index = this.customers.findIndex((item) => item.id === id);
-    this.customers[index] = {
-      ...customer,
-      ...changes,
-    };
-    return this.customers[index];
-  }
-
-  remove(id: number) {
-    const index = this.customers.findIndex((item) => item.id === id);
-    if (index === -1) {
-      throw new NotFoundException(`Customer #${id} not found`);
+  async create(data: CreateCustomerDto) {
+    const newCustomer = this.customerRepository.create(data);
+    if (data.userId) {
+      const user = await this.userService.findOne(data.userId);
+      newCustomer.user = user;
     }
-    this.customers.splice(index, 1);
-    return true;
+
+    return this.customerRepository.save(newCustomer);
+  }
+
+  async update(id: number, changes: UpdateCustomerDto) {
+    const customer = await this.existEntry(id);
+    this.customerRepository.merge(customer, changes);
+
+    return this.customerRepository.save(customer);
+  }
+
+  async remove(id: number) {
+    await this.existEntry(id);
+    return this.customerRepository.delete(id);
   }
 }

@@ -1,24 +1,22 @@
 import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinTable,
-  ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  CreateDateColumn,
+  Entity,
+  Column,
+  ManyToOne,
 } from 'typeorm';
-import { Product } from './product.entity';
+
 import { Exclude } from 'class-transformer';
 
+import { Product } from '../../products/entities/product.entity';
+import { Order } from './order.entity';
+
 @Entity()
-export class Category {
+export class OrderItem {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar', length: 200 })
-  name: string;
-
-  @Exclude()
   @CreateDateColumn({
     type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
@@ -32,7 +30,12 @@ export class Category {
   })
   updateAt: Date;
 
-  @ManyToMany(() => Product, (product) => product.categories)
-  @JoinTable({ name: 'product_categories_category' })
-  products: Product[];
+  @Column({ type: 'int' })
+  quantity: number;
+
+  @ManyToOne(() => Product)
+  product: Product;
+
+  @ManyToOne(() => Order, (order) => order.items)
+  order: Order;
 }

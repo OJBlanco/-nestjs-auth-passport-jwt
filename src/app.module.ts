@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import * as Joi from 'joi';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -19,11 +18,6 @@ const envFilePath: string = getEnvPath(`${__dirname}`);
       envFilePath,
       isGlobal: true,
       load: [config],
-      validationSchema: Joi.object({
-        API_KEY: Joi.number().required(),
-        DATABASE_NAME: Joi.string().required(),
-        DATABASE_PORT: Joi.number().required(),
-      }),
     }),
     DatabaseModule,
   ],
