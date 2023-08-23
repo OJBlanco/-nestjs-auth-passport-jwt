@@ -7,6 +7,7 @@ import { UsersModule } from './users/users.module';
 import { ProductsModule } from './products/products.module';
 import { getEnvPath } from './common/helpers/env.helper';
 import { DatabaseModule } from './database/database.module';
+import { AuthModule } from './auth/auth.module';
 import config from './config';
 
 const envFilePath: string = getEnvPath(`${__dirname}`);
@@ -20,6 +21,7 @@ const envFilePath: string = getEnvPath(`${__dirname}`);
       load: [config],
     }),
     DatabaseModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
