@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 
 import { Exclude } from 'class-transformer';
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 
 import { Customer } from './customer.entity';
 
