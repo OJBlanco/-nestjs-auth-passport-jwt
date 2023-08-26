@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -34,6 +34,10 @@ export class UsersService extends ValidateIfExist<User> {
     const user = await this.existEntry(id);
 
     return user;
+  }
+
+  async findByEmail(email: string) {
+    return this.userRepository.findOne({ where: { email } });
   }
 
   create(data: CreateUserDto) {
