@@ -20,7 +20,8 @@ export class AuthService {
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (user && isMatch) {
-      return user;
+      const userWithToken = await this.generateJWT(user);
+      return userWithToken;
     }
 
     return null;
