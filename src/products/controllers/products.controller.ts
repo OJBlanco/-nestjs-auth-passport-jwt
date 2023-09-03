@@ -21,6 +21,7 @@ import {
 } from '../dtos/products.dtos';
 import { ProductsService } from '../services/products.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @UseGuards(JwtAuthGuard)
 @ApiTags('products')
@@ -28,11 +29,13 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 export class ProductsController {
   constructor(private productsService: ProductsService) {}
 
+  @Public()
   @Get()
   getProducts(@Query() params: FilterProductDto) {
     return this.productsService.findAll(params);
   }
 
+  @Public()
   @Get(':productId')
   @HttpCode(HttpStatus.ACCEPTED)
   getOne(@Param('productId', ParseIntPipe) productId: number) {
